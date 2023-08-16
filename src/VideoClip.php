@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * Script Name: VideoClip.php
@@ -53,8 +54,7 @@ class VideoClip
      */
     public function __construct($media = '', $options = [])
     {
-        parent::__construct();
-        set_time_limit(0);
+        set_time_limit($options['timeout'] ?? 0);
         $this->setUploadPath($options);
         $config = [
             'ffmpeg.binaries' => $options['ffmpeg'] ?? '/usr/local/bin/ffmpeg',
