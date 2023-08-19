@@ -1,105 +1,71 @@
 <?php
 declare (strict_types=1);
 
+/**
+ * Created by PhpStorm.
+ * Script Name: Watermark.php
+ * Create: 2023/8/16 15:22
+ * Description: 本地解析
+ * Author: fudaoji<fdj@kuryun.cn>
+ */
+
 namespace Dao\VideoClip;
 
-use Dao\VideoClip\Exception\InvalidManagerException;
-use Dao\VideoClip\Interfaces\IVideo;
-use Dao\VideoClip\Tools\Bili;
-use Dao\VideoClip\Tools\DouYin;
-use Dao\VideoClip\Tools\HuoShan;
-use Dao\VideoClip\Tools\KuaiShou;
-use Dao\VideoClip\Tools\LiVideo;
-use Dao\VideoClip\Tools\MeiPai;
-use Dao\VideoClip\Tools\MiaoPai;
-use Dao\VideoClip\Tools\MoMo;
-use Dao\VideoClip\Tools\PiPiGaoXiao;
-use Dao\VideoClip\Tools\PiPiXia;
-use Dao\VideoClip\Tools\QQVideo;
-use Dao\VideoClip\Tools\QuanMingGaoXiao;
-use Dao\VideoClip\Tools\ShuaBao;
-use Dao\VideoClip\Tools\TaoBao;
-use Dao\VideoClip\Tools\TouTiao;
-use Dao\VideoClip\Tools\WeiBo;
-use Dao\VideoClip\Tools\WeiShi;
-use Dao\VideoClip\Tools\XiaoKaXiu;
-use Dao\VideoClip\Tools\XiGua;
-use Dao\VideoClip\Tools\ZuiYou;
+use Dao\VideoClip\Watermark\Local;
 
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/4/26 - 21:51
- **/
-
-/**
- * @method static HuoShan HuoShan(...$params)
- * @method static DouYin DouYin(...$params)
- * @method static KuaiShou KuaiShou(...$params)
- * @method static TouTiao TouTiao(...$params)
- * @method static XiGua XiGua(...$params)
- * @method static WeiShi WeiShi(...$params)
- * @method static PiPiXia PiPiXia(...$params)
- * @method static ZuiYou ZuiYou(...$params)
- * @method static MeiPai MeiPai(...$params)
- * @method static LiVideo LiVideo(...$params)
- * @method static QuanMingGaoXiao QuanMingGaoXiao(...$params)
- * @method static PiPiGaoXiao PiPiGaoXiao(...$params)
- * @method static MoMo MoMo(...$params)
- * @method static ShuaBao ShuaBao(...$params)
- * @method static XiaoKaXiu XiaoKaXiu(...$params)
- * @method static Bili Bili(...$params)
- * @method static WeiBo WeiBo(...$params)
- * @method static MiaoPai MiaoPai(...$params)
- * @method static QQVideo QQVideo(...$params)
- * @method static TaoBao TaoBao(...$params)
- */
 class Watermark
 {
+    private $config = [];
+    private $driver = 'local';
+    private $error = '';
+    /**
+     * @var Local
+     */
+    private $client;
 
-    public function __construct()
+    public function __construct($driver = 'local', $config = [])
     {
+        /* 获取配置 */
+        $this->config   =   array_merge($this->config, $config);
+
+        /* 设置上传驱动 */
+        $this->setDriver($driver);
     }
 
     /**
-     * @param $method
-     * @param $params
-     * @return mixed
+     * 设置上传驱动
+     * @param null $driver 驱动名称
+     * @param null $config  驱动配置
+     * @throws \Exception
+     * @Author  fudaoji<fdj@kuryun.cn>
      */
-    public static function __callStatic($method, $params)
-    {
-        $app = new self();
-        return $app->create($method, $params);
-    }
-
-    /**
-     * @param string $method
-     * @param array $params
-     * @return mixed
-     * @throws InvalidManagerException
-     */
-    private function create(string $method, array $params)
-    {
-        $className = __NAMESPACE__ . '\\Tools\\' . $method;
-        if (!class_exists($className)) {
-            throw new InvalidManagerException("the method name does not exist . method : {$method}");
+    private function setDriver($driver = null){
+        $driver && $this->driver = $driver;
+        $driver = $this->driver;
+        $class = __NAMESPACE__ ."\\Watermark\\" .ucfirst(strtolower($driver));
+        if(!class_exists($class)){
+            throw new \Exception("不存在上传驱动：{$driver}");
         }
-        return $this->make($className, $params);
+        $this->client = new $class($this->config);
     }
 
     /**
-     * @param string $className
-     * @param array $params
-     * @return mixed
-     * @throws InvalidManagerException
+     * 执行处理任务
+     * @param string $url
+     * @return array
+     * Author: fudaoji<fdj@kuryun.cn>
      */
-    private function make(string $className, array $params)
-    {
-        $app = new $className($params);
-        if ($app instanceof IVideo) {
-            return $app;
+    public function process($url = ''){
+        $return = [
+            'code' => 1,
+            'msg' => ''
+        ];
+        if(($res = $this->client->process($url)) === false){
+            $return['code'] = 0;
+            $return['msg'] = $this->client->getError();
+        }else{
+            $return['data'] = $res;
         }
-        throw new InvalidManagerException("this method does not integrate IVideo . namespace : {$className}");
+        return $return;
     }
 }
