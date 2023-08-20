@@ -127,6 +127,8 @@ class Local
                 $result = self::HuoShan()->start($url);
             } elseif (strpos($url, "ziyang.m.kspkg.com") || strpos($url, "kuaishou.com") || strpos($url, "gifshow.com") || strpos($url, "chenzhongtech.com")) {
                 $result = self::KuaiShou()->start($url);
+            } elseif (strpos($url, "pipix.com")) {
+                $result = self::PiPiXia()->start($url);
             } elseif (strpos($url, "www.pearvideo.com")) {
                 $result = self::LiVideo()->start($url);
             } elseif (strpos($url, "www.meipai.com")) {
@@ -135,8 +137,6 @@ class Local
                 $result = self::MoMo()->start($url);
             } elseif (strpos($url, "ippzone.com")) {
                 $result = self::PiPiGaoXiao()->start($url);
-            } elseif (strpos($url, "pipix.com")) {
-                $result = self::PiPiXia()->start($url);
             } elseif (strpos($url, "longxia.music.xiaomi.com")) {
                 $result = self::QuanMingGaoXiao()->start($url);
             } elseif (strpos($url, "shua8cn.com")) {

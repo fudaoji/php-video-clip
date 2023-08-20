@@ -7,17 +7,14 @@ use Dao\VideoClip\Watermark\Enumerates\UserGentType;
 use Dao\VideoClip\Watermark\Exception\ErrorVideoException;
 use Dao\VideoClip\Watermark\Utils\CommonUtil;
 
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/6/10 - 14:13
- **/
+
 class PiPiXiaLogic extends Base
 {
 
     private $itemId;
     private $contents;
+    private $video;
+    private $author;
 
 
     public function setItemId()
@@ -35,19 +32,18 @@ class PiPiXiaLogic extends Base
 
     public function setContents()
     {
-        $newGetContentsUrl = 'https://h5.pipix.com/bds/webapi/item/detail/';
+        $newGetContentsUrl = 'https://is.snssdk.com/bds/cell/detail/?cell_type=1&aid=1319&app_name=super&cell_id='. $this->itemId;
 
-        $contents = $this->get($newGetContentsUrl, [
-            'item_id' => $this->itemId,
-        ], [
+        $contents = $this->get($newGetContentsUrl, [], [
             'Referer'    => $newGetContentsUrl,
             'User-Agent' => UserGentType::ANDROID_USER_AGENT
         ]);
-
-        if (empty($contents['data']['item'])) {
+        if (empty($contents['data']['data']['item']['origin_video_download']['url_list'][0]['url'])) {
             throw new ErrorVideoException("获取不到指定的内容信息");
         }
-        $this->contents = $contents;
+        $this->contents = $contents['data']['data']['item'];
+        $this->author = $this->contents['author'];
+        $this->video = $this->contents['origin_video_download'];
     }
 
     /**
@@ -69,36 +65,35 @@ class PiPiXiaLogic extends Base
     /**
      * @return mixed
      */
-    public function getUrl()
+    public function getUrl():string
     {
         return $this->url;
     }
 
-    public function getVideoUrl()
+    public function getVideoUrl(): string
     {
-        return isset($this->contents['data']['item']['video']['video_fallback']['url_list'][0]['url']) ? $this->contents['data']['item']['video']['video_fallback']['url_list'][0]['url'] : '';
+        return $this->video['url_list'][0]['url'] ?? '';
     }
 
 
-    public function getVideoImage()
+    public function getVideoImage(): string
     {
-        return isset($this->contents['data']['item']['video']['cover_image']['url_list'][0]['url']) ? $this->contents['data']['item']['video']['cover_image']['url_list'][0]['url'] : '';
+        return $this->contents['cover']['url_list'][0]['url'] ?? '';
     }
 
-    public function getVideoDesc()
+    public function getVideoDesc(): string
     {
-        return isset($this->contents['data']['item']['share']['title']) ? $this->contents['data']['item']['share']['title'] : '';
+        return $this->contents['content'] ?? '';
     }
 
-    public function getUserPic()
+    public function getUserPic(): string
     {
-        return isset($this->contents['data']['item']['author']['avatar']['url_list'][0]['url']) ? $this->contents['data']['item']['author']['avatar']['url_list'][0]['url'] : '';
+        return $this->author['avatar']['download_list'][0]['url'] ?? '';
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
-        return isset($this->contents['data']['item']['author']['name']) ? $this->contents['data']['item']['author']['name'] : '';
+        return $this->author['name'] ?? '';
     }
-
 
 }

@@ -2,7 +2,7 @@
 
 ## 功能特性
 
-* 根据三方平台链接去除水印，目前支持抖音、小红书、西瓜、快手、火山；
+* 根据三方平台链接去除水印，目前支持抖音、小红书、西瓜、快手、火山、皮皮虾；
 
 * 短视频智能剪辑，目前支持去除水印、增加水印、背景模糊、变速、压缩、翻转、视频截取等操作。
 
@@ -16,7 +16,9 @@ composer require fudaoji/php-video-clip
 ~~~php
 use Dao\VideoClip\Watermark;
 
-$res = $watermark->process($this->xiaohongshuVideo);
+$video = 'https://h5.pipix.com/s/iJq6yrYX/';
+$watermark = new Watermark();
+$res = $watermark->process($video);
 var_dump($res);
 ~~~
 
@@ -24,7 +26,8 @@ var_dump($res);
 ~~~php
 use Dao\VideoClip\VideoClip;
 
-$factory = new VideoClip($this->videoUrl, ['upload_path' => $this->uplaodPath]);
+$video = 'https://h5.pipix.com/s/iJq6yrYX/';
+$factory = new VideoClip($video, ['upload_path' => '']);
 $factory->boxBlur(20); //背景虚化功能
 $save_path = $factory->save();  //获取保存地址
 var_dump($save_path);
@@ -37,7 +40,7 @@ var_dump($save_path);
 QQ交流群：
 726177820
 
-![输入图片说明](https://zyx.images.huihuiba.net/1-5f8afb8796b2f.png "WxBot微信开发框架QQ群聊二维码.png")
+![输入图片说明](https://zyx.images.huihuiba.net/1-5f8afb8796b2f.png)
 
 微信交流群：
 ![输入图片说明](https://guandaoji.oss-cn-hangzhou.aliyuncs.com/image/1-64e0c854e3951.png)

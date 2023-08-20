@@ -2,12 +2,6 @@
 declare (strict_types=1);
 
 namespace Dao\VideoClip\Watermark\Tools;
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/4/26 - 21:57
- **/
 
 use Dao\VideoClip\Watermark\Interfaces\IVideo;
 
