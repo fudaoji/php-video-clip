@@ -40,10 +40,10 @@ var_dump($save_path);
 QQ交流群：
 726177820
 
-![输入图片说明](https://zyx.images.huihuiba.net/1-5f8afb8796b2f.png)
+![输入图片说明](https://zyx.images.huihuiba.net/1-6455c790847b5.png)
 
-微信交流群：
-![输入图片说明](https://guandaoji.oss-cn-hangzhou.aliyuncs.com/image/1-64e0c854e3951.png)
+功能体验群：
+![输入图片说明](https://zyx.images.huihuiba.net/1-64e1d5cb1f179.png)
 
 ## 声明
 本项目仅供技术研究，请勿用于任何商业用途，请勿用于非法用途，如有任何人凭此做何非法事情，均于作者无关，特此声明。
