@@ -18,11 +18,14 @@ class WeiShiLogic extends Base
 
     private $feedId;
     private $contents;
+    private $author;
 
 
     public function setFeedId()
     {
-        preg_match('/feed\/(.*?)\/wsfeed/i', $this->url, $match);
+        $loc = get_headers($this->url, 1) ['Location'];
+        $loc = is_array($loc) ? $loc[0] : $loc;
+        preg_match('/\&id=(.*)\&spid/', $loc, $match);
         if (CommonUtil::checkEmptyMatch($match)) {
             throw new ErrorVideoException("feed_id参数获取失败");
         }
@@ -31,12 +34,14 @@ class WeiShiLogic extends Base
 
     public function setContents()
     {
-        $contents       = $this->post('https://h5.qzone.qq.com/webapp/json/weishi/WSH5GetPlayPage?t=0.4185745904612037&g_tk=', [
-            'feedid' => $this->feedId,
-        ], [
+        $contents       = $this->get('https://h5.weishi.qq.com/webapp/json/weishi/WSH5GetPlayPage?feedid=' . $this->feedId, [], [
             'User-Agent' => UserGentType::ANDROID_USER_AGENT
         ]);
-        $this->contents = $contents;
+        if(empty($contents['data']['feeds'][0])){
+            throw new ErrorVideoException("解析失败");
+        }
+        $this->contents = $contents['data']['feeds'][0];
+        $this->author = $this->contents['poster'];
     }
 
     /**
@@ -58,36 +63,34 @@ class WeiShiLogic extends Base
     /**
      * @return mixed
      */
-    public function getUrl()
+    public function getUrl():string
     {
         return $this->url;
     }
 
-    public function getVideoUrl()
+    public function getVideoUrl():string
     {
-        return isset($this->contents['data']['feeds'][0]['video_url']) ? $this->contents['data']['feeds'][0]['video_url'] : '';
+        return $this->contents['video_url'] ?? '';
     }
 
 
-    public function getVideoImage()
+    public function getVideoImage():string
     {
-        return isset($this->contents['data']['feeds'][0]['images'][0]['url']) ? $this->contents['data']['feeds'][0]['images'][0]['url'] : '';
+        return $this->contents['images'][0]['url'] ?? '';
     }
 
-    public function getVideoDesc()
+    public function getVideoDesc():string
     {
-        return isset($this->contents['data']['feeds'][0]['share_info']['body_map'][0]['desc']) ? $this->contents['data']['feeds'][0]['share_info']['body_map'][0]['desc'] : '';
+        return $this->contents['feed_desc_withat'] ?? '';
     }
 
-    public function getUsername()
+    public function getUsername():string
     {
-        return isset($this->contents['data']['feeds'][0]['poster']['nick']) ? $this->contents['data']['feeds'][0]['poster']['nick'] : '';
+        return $this->author['nick'] ?? '';
     }
 
-    public function getUserPic()
+    public function getUserPic():string
     {
-        return isset($this->contents['data']['feeds'][0]['poster']['avatar']) ? $this->contents['data']['feeds'][0]['poster']['avatar'] : '';
+        return $this->author['avatar'] ?? '';
     }
-
-
 }

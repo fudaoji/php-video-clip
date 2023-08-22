@@ -4,15 +4,16 @@ declare (strict_types=1);
 namespace Dao\VideoClip\Watermark\Tools;
 
 use Dao\VideoClip\Watermark\Interfaces\IVideo;
+use Dao\VideoClip\Watermark\Logic\ZuiYouLogic;
 
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/4/27 - 14:32
- **/
 class ZuiYou extends Base implements IVideo
 {
+
+    /**
+     * 解析逻辑层
+     * @var ZuiYouLogic
+     */
+    protected $logic;
 
     /**
      * 更新时间：2020/7/31
@@ -24,9 +25,7 @@ class ZuiYou extends Base implements IVideo
         $this->make();
         $this->logic->setOriginalUrl($url);
         $this->logic->checkUrlHasTrue();
-        $this->logic->setPId();
         $this->logic->setContents();
-        $this->logic->parseId();
         return $this->exportData();
     }
 

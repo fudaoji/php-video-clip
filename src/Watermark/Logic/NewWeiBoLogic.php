@@ -7,12 +7,6 @@ use Dao\VideoClip\Watermark\Enumerates\UserGentType;
 use Dao\VideoClip\Watermark\Exception\ErrorVideoException;
 use Dao\VideoClip\Watermark\Utils\CommonUtil;
 
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/6/13 - 21:05
- **/
 class NewWeiBoLogic extends Base
 {
 
@@ -81,32 +75,32 @@ class NewWeiBoLogic extends Base
     }
 
 
-    public function getUrl()
+    public function getUrl():string
     {
         return $this->url;
     }
 
-    public function getVideoUrl()
+    public function getVideoUrl():string
     {
         return isset($this->contents['data']['object']['stream']['hd_url']) ? $this->contents['data']['object']['stream']['hd_url'] : '';
     }
 
-    public function getVideoImage()
+    public function getVideoImage():string
     {
         return isset($this->contents['data']['object']['image']['url']) ? $this->contents['data']['object']['image']['url'] : '';
     }
 
-    public function getVideoDesc()
+    public function getVideoDesc():string
     {
         return isset($this->contents['data']['object']['summary']) ? $this->contents['data']['object']['summary'] : '';
     }
 
-    public function getUsername()
+    public function getUsername():string
     {
         return isset($this->contents['data']['object']['author']['screen_name']) ? $this->contents['data']['object']['author']['screen_name'] : '';
     }
 
-    public function getUserPic()
+    public function getUserPic():string
     {
         return isset($this->contents['data']['object']['author']['profile_image_url']) ? $this->contents['data']['object']['author']['profile_image_url'] : '';
     }

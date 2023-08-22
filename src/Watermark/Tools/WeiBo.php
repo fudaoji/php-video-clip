@@ -6,12 +6,6 @@ namespace Dao\VideoClip\Watermark\Tools;
 use Dao\VideoClip\Watermark\Interfaces\IVideo;
 use Dao\VideoClip\Watermark\Logic\NewWeiBoLogic;
 
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/6/13 - 21:04
- **/
 class WeiBo extends Base implements IVideo
 {
 
@@ -20,7 +14,7 @@ class WeiBo extends Base implements IVideo
      * @param string $url
      * @return array
      */
-    public function start(string $url): array
+    public function startV1(string $url): array
     {
         $this->make();
         $this->logic->setOriginalUrl($url);
@@ -35,7 +29,7 @@ class WeiBo extends Base implements IVideo
      * @param string $url
      * @return array
      */
-    public function newVideoStart(string $url): array
+    public function start(string $url): array
     {
         $obj         = new NewWeiBoLogic($this, 'newweibo');
         $this->logic = $obj;
@@ -46,5 +40,4 @@ class WeiBo extends Base implements IVideo
         $this->logic->setContents();
         return $this->exportData();
     }
-
 }

@@ -2,17 +2,17 @@
 declare (strict_types=1);
 
 namespace Dao\VideoClip\Watermark\Tools;
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/4/26 - 21:57
- **/
-
 use Dao\VideoClip\Watermark\Interfaces\IVideo;
+use Dao\VideoClip\Watermark\Logic\MeiPaiLogic;
 
 class MeiPai extends Base implements IVideo
 {
+
+    /**
+     * 解析逻辑层
+     * @var MeiPaiLogic
+     */
+    protected $logic;
 
     /**
      * 更新时间：2020/7/31

@@ -7,53 +7,29 @@ use Dao\VideoClip\Watermark\Enumerates\UserGentType;
 use Dao\VideoClip\Watermark\Exception\ErrorVideoException;
 use Dao\VideoClip\Watermark\Utils\CommonUtil;
 
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/6/10 - 14:13
- **/
 class ZuiYouLogic extends Base
 {
 
-    private $pid;
     private $contents;
-    private $id;
-
-
-    public function setPId()
-    {
-        if (strpos($this->url, 'hybrid/share/post')) {
-            preg_match('/hybrid\/share\/post\?pid=([0-9]+)&/i', $this->url, $match);
-        } elseif (strpos($this->url, '/detail/')) {
-            preg_match('/detail\/([0-9]+)\/?/i', $this->url, $match);
-        } else {
-            throw new ErrorVideoException("提交的域名不符合格式");
-        }
-        if (CommonUtil::checkEmptyMatch($match)) {
-            throw new ErrorVideoException("获取不到pid参数信息");
-        }
-        $this->pid = $match[1];
-    }
 
     public function setContents()
     {
-        $newGetContentsUrl = 'https://share.izuiyou.com/api/post/detail';
-        $contents          = $this->post($newGetContentsUrl, '{"pid":' . $this->pid . '}', [
-            'Referer'    => $newGetContentsUrl,
-            'User-Agent' => UserGentType::ANDROID_USER_AGENT,
-        ]);
-        $this->contents    = $contents;
-    }
-
-    public function parseId()
-    {
-        $contents = $this->contents;
-        if ((isset($contents['ret']) && $contents['ret'] != 1) || (isset($contents['data']['post']['imgs'][0]['id']) && $contents['data']['post']['imgs'][0]['id'] == null)) {
-            throw new ErrorVideoException("获取不到指定的内容信息");
+        $text = $this->get($this->url);
+        preg_match('/fullscreen=\"false\" src=\"(.*?)\"/', $text, $video);
+        preg_match('/:<\/span><h1>(.*?)<\/h1><\/div><div class=/', $text, $video_title);
+        preg_match('/poster=\"(.*?)\">/', $text, $video_cover);
+        if(empty($video[1])){
+            throw new ErrorVideoException("获取不到视频信息");
         }
-        $id       = $contents['data']['post']['imgs'][0]['id'];
-        $this->id = $id;
+        $video_url = str_replace('\\', '/', str_replace('u002F', '', $video[1]));
+        preg_match('/<span class=\"SharePostCard__name\">(.*?)<\/span>/', $text, $video_author);
+
+        $this->contents = [
+            'author' => $video_author[1],
+            'title' => $video_title[1],
+            'cover' => $video_cover[1],
+            'url' => $video_url,
+        ];
     }
 
     /**
@@ -61,64 +37,40 @@ class ZuiYouLogic extends Base
      */
     public function getContents()
     {
-        return $this->contents['data']['post'];
+        return $this->contents;
     }
 
     /**
      * @return mixed
      */
-    public function getPid()
-    {
-        return $this->pid;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUrl()
+    public function getUrl():string
     {
         return $this->url;
     }
 
-    public function getVideoUrl()
+    public function getVideoUrl():string
     {
-        return isset($this->contents['data']['post']['videos'][$this->id]['url']) ? $this->contents['data']['post']['videos'][$this->id]['url'] : '';
+        return $this->contents['url'];
     }
 
 
-    public function getVideoImage()
+    public function getVideoImage():string
     {
-        if (empty($this->contents['data']['post']['imgs'][0]['id'])) {
-            return '';
-        }
-        $id = $this->contents['data']['post']['imgs'][0]['id'];
-        if ($id) {
-            return 'http://tbfile.izuiyou.com/img/frame/id/' . $id;
-        }
+        return  $this->contents['cover'];
     }
 
-    public function getVideoDesc()
+    public function getVideoDesc():string
     {
-        return isset($this->contents['data']['post']['content']) ? $this->contents['data']['post']['content'] : '';
+        return $this->contents['title'];
     }
 
-    public function getUsername()
+    public function getUsername():string
     {
-        return isset($this->contents['data']['post']['member']['name']) ? $this->contents['data']['post']['member']['name'] : '';
+        return $this->contents['author'];
     }
 
-    public function getUserPic()
+    public function getUserPic():string
     {
-        return isset($this->contents['data']['post']['member']['avatar_urls']['aspect_low']['urls'][0]) ? $this->contents['data']['post']['member']['avatar_urls']['aspect_low']['urls'][0] : '';
+        return  '';
     }
-
-
 }

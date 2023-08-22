@@ -8,12 +8,6 @@ use Dao\VideoClip\Watermark\Exception\ErrorVideoException;
 use Dao\VideoClip\Watermark\Utils\CommonUtil;
 use Dao\VideoClip\Watermark\Utils\MeiPaiUtil;
 
-/**
- * Created By 1
- * Author：smalls
- * Email：smalls0098@gmail.com
- * Date：2020/6/10 - 14:51
- **/
 class MeiPaiLogic extends Base
 {
 
@@ -45,26 +39,26 @@ class MeiPaiLogic extends Base
             throw new ErrorVideoException("获取不到视频信息和用户信息");
         }
         $this->title          = $titleMatches[1];
-        $this->userName       = $userInfoMatches[1];
-        $this->userPic        = $userInfoMatches[2];
+        $this->userName       = $userInfoMatches[2];
+        $this->userPic        = "https:".$userInfoMatches[1];
         $this->videoPic       = $videoImageMatches[1];
         $this->videoBase64Url = $videoMatches[1];
     }
 
 
-    public function getVideoUrl()
+    public function getVideoUrl():string
     {
         $hex      = MeiPaiUtil::getHex($this->videoBase64Url);
         $arr      = MeiPaiUtil::getDec($hex[0]);
         $d        = MeiPaiUtil::subStr($arr[0], $hex[1]);
         $videoUrl = base64_decode(MeiPaiUtil::subStr(MeiPaiUtil::getPos($d, $arr[1]), $d));
-        return $videoUrl;
+        return "https:".$videoUrl;
     }
 
     /**
      * @return mixed
      */
-    public function getUrl()
+    public function getUrl():string
     {
         return $this->url;
     }
@@ -72,7 +66,7 @@ class MeiPaiLogic extends Base
     /**
      * @return mixed
      */
-    public function getVideoDesc()
+    public function getVideoDesc():string
     {
         return $this->title;
     }
@@ -80,7 +74,7 @@ class MeiPaiLogic extends Base
     /**
      * @return mixed
      */
-    public function getUsername()
+    public function getUsername():string
     {
         return $this->userName;
     }
@@ -88,7 +82,7 @@ class MeiPaiLogic extends Base
     /**
      * @return mixed
      */
-    public function getUserPic()
+    public function getUserPic():string
     {
         return $this->userPic;
     }
@@ -96,7 +90,7 @@ class MeiPaiLogic extends Base
     /**
      * @return mixed
      */
-    public function getVideoImage()
+    public function getVideoImage():string
     {
         return $this->videoPic;
     }
@@ -104,10 +98,8 @@ class MeiPaiLogic extends Base
     /**
      * @return mixed
      */
-    public function getVideoBase64Url()
+    public function getVideoBase64Url():string
     {
         return $this->videoBase64Url;
     }
-
-
 }

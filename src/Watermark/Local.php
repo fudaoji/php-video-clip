@@ -129,10 +129,16 @@ class Local
                 $result = self::KuaiShou()->start($url);
             } elseif (strpos($url, "pipix.com")) {
                 $result = self::PiPiXia()->start($url);
-            } elseif (strpos($url, "www.pearvideo.com")) {
-                $result = self::LiVideo()->start($url);
+            } elseif (strpos($url, "weishi.qq.com")) {
+                $result = self::WeiShi()->start($url);
+            } elseif (strpos($url, "weibo.com")) {
+                $result = self::WeiBo()->start($url);
             } elseif (strpos($url, "www.meipai.com")) {
                 $result = self::MeiPai()->start($url);
+            }  elseif (strpos($url, "izuiyou.com") || strpos($url, "xiaochuankeji.cn")) {
+                $result = self::ZuiYou()->start($url);
+            } elseif (strpos($url, "www.pearvideo.com")) {
+                $result = self::LiVideo()->start($url);
             } elseif (strpos($url, "immomo.com")) {
                 $result = self::MoMo()->start($url);
             } elseif (strpos($url, "ippzone.com")) {
@@ -143,12 +149,8 @@ class Local
                 $result = self::ShuaBao()->start($url);
             } elseif (strpos($url, "toutiaoimg.com") || strpos($url, "toutiaoimg.cn")) {
                 $result = self::TouTiao()->start($url);
-            } elseif (strpos($url, "weishi.qq.com")) {
-                $result = self::WeiShi()->start($url);
-            } elseif (strpos($url, "mobile.xiaokaxiu.com")) {
+            }  elseif (strpos($url, "mobile.xiaokaxiu.com")) {
                 $result = self::XiaoKaXiu()->start($url);
-            }  elseif (strpos($url, "izuiyou.com")) {
-                $result = self::ZuiYou()->start($url);
             } else {
                 $this->error = '您输入的链接错误！';
                 return false;
