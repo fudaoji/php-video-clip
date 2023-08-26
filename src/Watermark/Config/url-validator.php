@@ -9,6 +9,7 @@
 
 
 return [
+    'lvzhou' => ['oasis.weibo.cn'],
     'xiaohongshu' => ['xhslink.com'],
     'bili' => ['b23.tv', 'www.bilibili.com'],
     'douyin' => ['douyin.com', 'iesdouyin.com'],

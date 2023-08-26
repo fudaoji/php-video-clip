@@ -18,6 +18,7 @@ use Dao\VideoClip\Watermark\Tools\DouYin;
 use Dao\VideoClip\Watermark\Tools\HuoShan;
 use Dao\VideoClip\Watermark\Tools\KuaiShou;
 use Dao\VideoClip\Watermark\Tools\LiVideo;
+use Dao\VideoClip\Watermark\Tools\LvZhou;
 use Dao\VideoClip\Watermark\Tools\MeiPai;
 use Dao\VideoClip\Watermark\Tools\MiaoPai;
 use Dao\VideoClip\Watermark\Tools\MoMo;
@@ -57,6 +58,7 @@ use Dao\VideoClip\Watermark\Tools\ZuiYou;
  * @method static QQVideo QQVideo(...$params)
  * @method static TaoBao TaoBao(...$params)
  * @method static Xiaohongshu Xiaohongshu(...$params)
+ * @method static LvZhou LvZhou(...$params)
  */
 class Local
 {
@@ -137,6 +139,8 @@ class Local
                 $result = self::MeiPai()->start($url);
             }  elseif (strpos($url, "izuiyou.com") || strpos($url, "xiaochuankeji.cn")) {
                 $result = self::ZuiYou()->start($url);
+            } elseif (strpos($url, 'oasis.weibo.cn')) {
+                $result = self::LvZhou()->start($url);
             } elseif (strpos($url, "www.pearvideo.com")) {
                 $result = self::LiVideo()->start($url);
             } elseif (strpos($url, "immomo.com")) {
