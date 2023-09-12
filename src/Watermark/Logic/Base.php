@@ -57,6 +57,11 @@ class Base
 
     protected $toolsClass;
 
+    const VIDEO = 'video';
+    const IMAGES = 'images';
+    
+    protected $type = self::VIDEO;
+
 
     public function __construct($toolsObj, $toolsClass)
     {
@@ -114,4 +119,19 @@ class Base
         $this->url = $url;
     }
 
+    public function getType(){
+        return $this->type;
+    }
+
+    public function getImages(){
+        return '';
+    }
+
+    public function getMusicUrl(){
+        return '';
+    }
+
+    public function getMusicTitle(){
+        return '';
+    }
 }

@@ -10,12 +10,15 @@
 
 namespace Dao\VideoClip;
 
+use FFMpeg\Coordinate\Dimension;
 use FFMpeg\Coordinate\FrameRate;
+use FFMpeg\Coordinate\Point;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
 use FFMpeg\Filters\Audio\SimpleFilter;
 use FFMpeg\Filters\Video\ClipFilter;
+use FFMpeg\Filters\Video\CropFilter;
 use FFMpeg\Filters\Video\CustomFilter;
 use FFMpeg\Filters\Video\FrameRateFilter;
 use FFMpeg\Filters\Video\SynchronizeFilter;
@@ -97,9 +100,19 @@ class VideoClip
      * Author: fudaoji<fdj@kuryun.cn>
      */
     public function rmAudio(){
-        //ffmpeg -i ./shoes.mp4 -map 0:0 -vcodec copy ./output_rmaudio.mp4
-        $this->video
-            ->addFilter(new SimpleFilter(array('-map', '0:0'))); //使用自定义参数
+        //ffmpeg -i ./shoes.mp4 -an -vcodec copy ./output_rmaudio.mp4
+        $this->video->addFilter(new SimpleFilter(array('-an', '-vcodec', 'copy'))); //使用自定义参数
+    }
+
+    /**
+     * 去除视频
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function rmVideo(){
+        //ffmpeg -i ./shoes.mp4 -vn -acodec copy ./output_rmvideo.mp3
+        //ffmpeg -i INPUT.mp4 -vn -c:a libmp3lame -y output.mp3
+        //$this->video->addFilter(new SimpleFilter(array('-vn', '-acodec', 'copy'))); //使用自定义参数
+        $this->video->addFilter(new SimpleFilter(array('-vn', '-c:a', 'libmp3lame', '-y')));
     }
 
     /**
@@ -255,10 +268,10 @@ class VideoClip
         return $save_path;
     }
 
-    private function getSavePath($filename = ''){
-        $base_name = time() . basename($this->media);
+    private function getSavePath($filename = '', $ext = '.mp4'){
+        $base_name = date("YmdHis") . basename($this->media);
         if(strpos($base_name, '.') === false){
-            $base_name .= ".mp4";
+            $base_name .= $ext;
         }
         return $this->rootPath . (empty($filename) ? $base_name : $filename);
     }
@@ -272,5 +285,26 @@ class VideoClip
     public function getFinalCommand($filename = ''){
         $save_path = $this->getSavePath($filename);
         return $this->video->getFinalCommand($this->format, $save_path);
+    }
+
+    /**
+     * 形状裁剪
+     * Author: fudaoji<fdj@kuryun.cn>
+     */
+    public function crop($x = 0, $y = 0, $width = 0, $height = 0){
+        $width = $width ?: $this->mediaInfo('width');
+        $height = $height ?: $this->mediaInfo('height');
+        $dimension = new Dimension($width, $height);
+        $point = new Point($x, $y);
+        $this->video
+            ->addFilter(new CropFilter($point, $dimension));
+    }
+
+    public function getFfmpeg(){
+        return $this->ffmpeg;
+    }
+
+    public function getFfprobe(){
+        return $this->ffprobe;
     }
 }
