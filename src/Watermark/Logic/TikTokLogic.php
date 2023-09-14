@@ -24,7 +24,7 @@ class TikTokLogic extends Base
         if($this->type == parent::IMAGES){
             $_images = [];
             foreach ($this->images as $image){
-                $_images[] = ($image['urlList'][0] ?? '');
+                $_images[] = ($image['url_list'][0] ?? '');
             }
             $images = implode(',', $_images);
         }
@@ -32,7 +32,7 @@ class TikTokLogic extends Base
     }
 
     public function getMusicUrl(){
-        return $this->type == parent::IMAGES ? $this->video['uri'] : '';
+        return $this->type == parent::IMAGES ? $this->video['play_addr']['uri'] : '';
     }
 
     public function getMusicTitle(){

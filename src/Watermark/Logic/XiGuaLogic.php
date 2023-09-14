@@ -65,11 +65,28 @@ class XiGuaLogic extends Base
 
     public function getVideoUrl(): string
     {
-        $video = is_null($this->contents['videoResource']['dash']) ? $this->contents['videoResource']['normal'] : $this->contents['videoResource']['dash'];
-        /*if(empty($video["video_list"]['video_2']["main_url"])){
-            return  base64_decode($video["video_list"]['video_1']["main_url"]);
-        }*/
-        return  base64_decode($video["video_list"]['video_1']["main_url"]);
+        $video_resource = $this->contents['videoResource'];
+        $video_list = [];
+        $h265 = $video_resource['h265'];
+        $types = ['dash', 'normal'];
+        foreach ($types as $type){
+            if(!empty($video_resource[$type])){
+                $video_list = array_merge($video_list, array_values($video_resource[$type]['video_list']));
+            }
+            if(!empty($h265[$type])){
+                $video_list = array_merge($video_list, array_values($h265[$type]['video_list']));
+            }
+        }
+        
+        $video_url = '';
+        foreach ($video_list as $k => $item){
+            $_url = base64_decode($item['main_url']);
+            if(strpos($_url, "https://v3-xg") !== false){
+                $video_url = $_url;
+                break;
+            }
+        }
+        return  $video_url;
     }
 
     public function getVideoImage(): string
